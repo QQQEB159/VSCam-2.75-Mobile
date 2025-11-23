@@ -7,6 +7,16 @@ import flixel.input.gamepad.FlxGamepadInputID;
 @:structInit
 @:publicFields
 class SaveVariables {
+	// Mobile and Mobile Controls Releated
+	var extraButtons:String = "NONE"; // mobile extra button option
+	var hitboxPos:Bool = true; // hitbox extra button position option
+	var controlsAlpha:Float = FlxG.onMobile ? 0.6 : 0;
+	var screensaver:Bool = false;
+	#if android
+	var storageType:String = "EXTERNAL";
+	#end
+    var hitboxType:String = "Gradient";
+	
 	// for readability/backwards compatability
 	var downscroll(get, never):Bool;
 	function get_downscroll():Bool return scrollDirection.toLowerCase() == 'down';

@@ -1,6 +1,7 @@
 #if !macro
 // project specific
 import funkin.backend.*;
+import mobile.backend.StorageUtil;
 import funkin.backend.Song.Chart;
 import funkin.states.*;
 import funkin.objects.FunkinSprite;
@@ -39,6 +40,19 @@ import funkin.backend.audio.FlxAudio;
 //these are functions we use a lot, so make them generally available
 import funkin.backend.LanguageHandler._t;
 import funkin.backend.LanguageHandler._formatT;
+
+// Android
+#if android
+import android.content.Context as AndroidContext;
+import android.widget.Toast as AndroidToast;
+import android.os.Environment as AndroidEnvironment;
+import android.Permissions as AndroidPermissions;
+import android.Settings as AndroidSettings;
+import android.Tools as AndroidTools;
+import android.os.Build.VERSION as AndroidVersion;
+import android.os.Build.VERSION_CODES as AndroidVersionCode;
+import android.os.BatteryManager as AndroidBatteryManager;
+#end
 
 using StringTools;
 #end

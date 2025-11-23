@@ -2,10 +2,14 @@
 <project>
 
 	<!-- application stuff -->
-	<app title="Friday Night Funkin': Vs. Camellia" file="Camellia" main="Main" version="3.0.0" company="Camellia" />
+	<app title="Friday Night Funkin': Vs. Camellia" file="Camellia" packageName="com.funny.camellia" package="com.funny.camellia" main="Main" version="3.0.0" company="Camellia" />
 
-	<window width="1280" height="720" fps="120" background="#000000" hardware="true" vsync="false" />
-	<window orientation="landscape" fullscreen="false" resizable="true"/>
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
+	<!--Desktop-specific-->
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+
+	<!--Mobile-specific-->
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" />
 	<window antialiasing="0" allow-high-dpi="true"/>
 
 	<!-- defines -->
@@ -15,7 +19,7 @@
 	<define name="SCRIPTS_ALLOWED"/>
 	<define name="ADDONS_ALLOWED"/>
 	<define name="VIDEOS_ALLOWED" if="cpp"/>
-	<define name="DISCORD_ALLOWED"/>
+	<define name="DISCORD_ALLOWED" if="desktop"/>
 	<define name="AWARDS_ALLOWED"/>
 	
 	<!-- makes errors show exactly what the issue is instead of being vague -->
@@ -29,7 +33,7 @@
 	<source path="src" />
 	
 	<!-- use templates for assets -->
-	<section unless="mac">
+	<section unless="mac || mobile">
 		<assets path="assets" type="template"/>
 		<assets path="addons" type="template" if="ADDONS_ALLOWED"/>
 	</section>
@@ -38,13 +42,12 @@
 		...unless we're on macOS, then don't because lime is stupid and places
 		these folders in the wrong location in the final .app file
 	-->
-	<section if="mac">
+	<section if="mac || mobile">
 		<assets path="assets"/>
 		<assets path="addons" if="ADDONS_ALLOWED"/>
 	</section>
 
 	<!-- libraries -->
-	<haxelib name="lime" version="8.1.2" />
 	<haxelib name="openfl" version="9.3.3" />
 	<haxelib name="flixel" version="5.5.0" />
 	<haxelib name="flixel-addons" version="3.0.2"/>
@@ -60,7 +63,7 @@
 	<!-- miscellaneous -->
 
 
-	<define name="FLX_NO_TOUCH" />
+	<!--<define name="FLX_NO_TOUCH" />-->
 	<!--<define name="FLX_NO_GAMEPAD"/>-->
 	<define name="FLX_NO_DEBUG" unless="debug" />
 
@@ -76,6 +79,16 @@
 	<define name="no-deprecation-warnings" />
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 
+	<!-- Allow Access to Engine Files in Mobile -->
+	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
+	<haxedef name="lime_use_old_deltatime" />
+	
+	<!-- Do whatever you want I'm tired uninstall and install everytime -->
+	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
+	
+	<!-- Category Type for Apple Systems -->
+	<config:ios category_type="public.app-category.music-games" />
+	
 	<!-- Fix compiling issues -->
     <setenv name="HAXEPATH" value="./"/>
 	

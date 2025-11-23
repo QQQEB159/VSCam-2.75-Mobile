@@ -29,14 +29,26 @@ class Main extends Sprite {
 	public function new() {
 		super();
 
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
+		#if mobile
+		#if android
+		StorageUtil.requestPermissions();
+		#end
+		Sys.setCwd(StorageUtil.getStorageDirectory());
+		#end
+		mobile.backend.CrashHandler.init();
+		
+		//Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 
-		addChild(new FlxGame(InitState, 0, 0, 120, true));
+		addChild(new FlxGame(InitState, 1280, 720, 60, true));
 		addChild(fpsCounter = new FPSCounter(10, 10, 12));
 		fpsCounter.visible = Settings.data.fpsCounter;
 		addChild(awardsCard = new AwardCard());
 
 		@:privateAccess FlxG.keys._nativeCorrection.set("0_43", FlxKey.PLUS);
+		
+		#if android
+		FlxG.android.preventDefaultKeys = [BACK];
+		#end
 	}
 
 	override function __enterFrame(delta:Int) {
@@ -93,9 +105,9 @@ class Main extends Sprite {
 		final defines:Map<String, Dynamic> = _external.CompilerDefines.list;
 		errMsg += 'Haxe: ${defines['haxe']}\nFlixel: ${defines['flixel']}\nOpenFL: ${defines['openfl']}\nLime: ${defines['lime']}';
 
-		if (!FileSystem.exists('./crash/')) FileSystem.createDirectory('./crash/');
+		if (!FileSystem.exists('crash/')) FileSystem.createDirectory('crash/');
 
-		File.saveContent('./crash/$date.txt', '$errMsg\n');
+		File.saveContent('crash/$date.txt', '$errMsg\n');
 		Sys.println('\n$errMsg');
 		lime.app.Application.current.window.alert(errMsg, "Error!");
 		Sys.exit(1);
@@ -105,6 +117,9 @@ class Main extends Sprite {
 class InitState extends flixel.FlxState {
 	override function create():Void {
 		setDefines();
+		if(!CopyState.checkExistingFiles())
+		flixel.FlxG.switchState(new CopyState());
+		else
 		flixel.FlxG.switchState(new TitleState());
 	}
 
@@ -113,7 +128,9 @@ class InitState extends flixel.FlxState {
 		Controls.load();
 		Settings.load();
 		Scores.load();
+		#if DISCORD_ALLOWED
 		DiscordClient.start();
+		#end
 		Addons.load();
 		Awards.load();
 		Meta.cacheFiles();
@@ -125,7 +142,7 @@ class InitState extends flixel.FlxState {
 
 		FlxG.mouse.load(openfl.display.BitmapData.fromFile('assets/images/cursor.png'));
 
-		FlxG.fullscreen = Settings.data.fullscreen;
+		FlxG.fullscreen = #if mobile true #else Settings.data.fullscreen #end;
 		FlxG.fixedTimestep = false;
 		FlxG.drawFramerate = FlxG.updateFramerate = Settings.data.framerate;
 		FlxG.game.focusLostFramerate = Math.floor(Settings.data.framerate / 4);
@@ -178,7 +195,9 @@ class InitState extends flixel.FlxState {
 		FlxG.sound.volume = FlxG.save.data.volume ?? 1.0;
 		FlxG.sound.muted = FlxG.save.data.muted ?? false;
 		FlxG.sound.volumeHandler(FlxG.sound.muted ? 0 : FlxG.sound.volume);
+		#if desktop
 		FlxG.game.soundTray.updateWithSettings();
+		#end
 
 		openfl.Lib.application.window.onClose.add(function () {
 			Main.isClosing = true;

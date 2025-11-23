@@ -4,9 +4,7 @@ import funkin.backend.audio.FlxAudio;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import lime.utils.ArrayBufferView;
 
-#if desktop
 @:allow(funkin.backend.audio._backends.FlxOpenALSource)
-#end
 @:allow(funkin.backend.audio.FlxAudio)
 class FlxAudioHandler
 {
@@ -102,7 +100,6 @@ class FlxAudioHandler
 
 	public static function clearUnusedSounds()
 	{
-		#if desktop
 		for (key in audioCache.keys())
 		{
 			if (audioCache.get(key).onUse || (music.path == key && !music.stopped))
@@ -111,7 +108,6 @@ class FlxAudioHandler
 			trace('removed cached sound $key');
 			audioCache.remove(key);
 		}
-		#end
 	}
 }
 

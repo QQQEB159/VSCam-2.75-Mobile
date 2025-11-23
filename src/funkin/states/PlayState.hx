@@ -347,7 +347,9 @@ class PlayState extends FunkinState {
 			funkin.backend.CreditsStuff.CreditsOverlay.rolldaCredits(this, camOther, playfield.playerID == 0);
 		}
 
+		#if DISCORD_ALLOWED
 		DiscordClient.changePresence('Playing: $songName', '', '', true);
+		#end
 
 		if (!_requestSubStateReset) {
 			var substate = new BasicBorderTransition(Dialogue.fromMenu ? BOTH : BOTTOM, true, 0.5, 0);
@@ -967,9 +969,13 @@ class PlayState extends FunkinState {
 			final substate:funkin.states.ResultsScreenState = new funkin.states.ResultsScreenState();
 			substate.camera = camOther;
 			openSubState(substate);
+			#if DISCORD_ALLOWED
 			DiscordClient.changePresence('In Results');
+			#end
 		} else {
+			#if DISCORD_ALLOWED
 			DiscordClient.changePresence('In the Menus', '', '', true);
+			#end
 			Conductor.inst = FlxAudioHandler.loadAudio(Paths.audioPath(funkin.backend.CreditsStuff.MenuMusic.gimmeMusicName()));
 			Conductor.play();
 			var wasStory = storyMode;
@@ -1008,7 +1014,9 @@ class PlayState extends FunkinState {
 		Conductor.play();
 		
 		FlxG.switchState(storyMode ? new StoryMenuState() : new FreeplayState());
+		#if DISCORD_ALLOWED
 		DiscordClient.changePresence('In the Menus', '', '', true);
+		#end
 		storyMode = false;
 		return true;
 	}
