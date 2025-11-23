@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package states;
+package funkin.states;
 
 import lime.utils.Assets as LimeAssets;
 import openfl.utils.Assets as OpenFLAssets;
@@ -34,7 +34,7 @@ import flixel.ui.FlxBar.FlxBarFillDirection;
  * ...
  * @author: Karim Akra
  */
-class CopyState extends MusicBeatState
+class CopyState extends FunkinState
 {
 	private static final textFilesExtensions:Array<String> = ['ini', 'txt', 'xml', 'hxs', 'hx', 'json', 'frag', 'vert'];
 	public static final IGNORE_FOLDER_FILE_NAME:String = "CopyState-Ignore.txt";
