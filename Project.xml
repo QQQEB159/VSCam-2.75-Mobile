@@ -81,7 +81,7 @@
 
 	<!-- Allow Access to Engine Files in Mobile -->
 	<haxedef name="SHARE_MOBILE_FILES" if="mobile" />
-	<haxedef name="lime_use_old_deltatime" />
+	<define name="lime_use_old_deltatime" />
 	
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
