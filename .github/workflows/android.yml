@@ -35,7 +35,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib git hxcpp https://github.com/HomuHomu833-haxe-stuff/hxcpp
-          haxelib git lime https://github.com/QQQEB159/lime-8.1.2
+          haxelib git lime https://github.com/FNF-SE/lime
           haxelib install flixel-addons 3.0.2 --quiet
           haxelib install openfl 9.3.3 --quiet
           haxelib install flixel 5.5.0 --quiet
