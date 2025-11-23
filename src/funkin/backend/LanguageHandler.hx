@@ -2,6 +2,7 @@ package funkin.backend;
 
 import haxe.ds.StringMap;
 import sys.io.File;
+import sys.FileSystem;
 
 class LanguageHandler {
     public static final DEFAULT_LANGUAGE:String = "English";
