@@ -150,11 +150,11 @@ class Paths {
 		
 		// will ignore addons entirely and just use the path given from assets instead if it exists
 		if (overrideAddons) {
-			if (FileSystem.exists('assets/$path')) return 'assets/$path';
+			if (FileSystem.exists('assets/$path')) return #if mobile StorageUtil.getStorageDirectory(true) + #end 'assets/$path';
 		}
 
 		// if the file doesn't exist in the current played addon
-		if (FileSystem.exists(finalPath())) return finalPath();
+		if (FileSystem.exists(finalPath())) return #if mobile StorageUtil.getStorageDirectory(true) + #end finalPath();
 
 		// run through the other addons
 		if (Addons.list.length > 0) {
@@ -162,13 +162,13 @@ class Paths {
 				if (addon.disabled) continue;
 
 				mainDirectory = 'addons/${addon.id}';
-				if (FileSystem.exists(finalPath())) return finalPath();
+				if (FileSystem.exists(finalPath())) return #if mobile StorageUtil.getStorageDirectory(true) + #end finalPath();
 			}
 		}
 		#end
 
 		// if that doesn't exist there OneOfTwo just return assets
-		return 'assets/$path';
+		return #if mobile StorageUtil.getStorageDirectory(true) + #end 'assets/$path';
 	}
 
 	// images

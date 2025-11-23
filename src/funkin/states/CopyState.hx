@@ -42,7 +42,6 @@ class CopyState extends FunkinState
 	public static var locatedFiles:Array<String> = [];
 	public static var maxLoopTimes:Int = 0;
 
-	public var loadingImage:FlxSprite;
 	public var loadingBar:FlxBar;
 	public var loadedText:FlxText;
 	public var copyLoop:FlxAsyncLoop;
@@ -69,12 +68,6 @@ class CopyState extends FunkinState
 		shouldCopy = true;
 
 		add(new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xffcaff4d));
-
-		loadingImage = new FlxSprite(0, 0, Paths.image('funkay'));
-		loadingImage.setGraphicSize(0, FlxG.height);
-		loadingImage.updateHitbox();
-		loadingImage.screenCenter();
-		add(loadingImage);
 
 		loadingBar = new FlxBar(0, FlxG.height - 26, FlxBarFillDirection.LEFT_TO_RIGHT, FlxG.width, 26);
 		loadingBar.setRange(0, maxLoopTimes);

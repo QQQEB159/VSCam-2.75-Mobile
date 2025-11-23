@@ -14,7 +14,7 @@ class Addons {
 	public static var current:String = '';
 
 	@:unreflective
-	public static final folder:String = #if mobile Sys.getCwd() + #end 'addons';
+	public static final folder:String = #if mobile StorageUtil.getStorageDirectory(true) + #end 'addons';
 
 	public static function load() {
 		#if ADDONS_ALLOWED
