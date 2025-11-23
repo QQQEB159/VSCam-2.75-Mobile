@@ -13,6 +13,9 @@ import haxe.io.Path;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.UncaughtErrorEvent;
+#if mobile
+import mobile.backend.StorageUtil;
+#end
 
 #if (linux && !debug)
 @:cppInclude('../../../../src/_external/gamemode_client.h') // i don't care enough to properly point back to the src folder whatever it works fuck you

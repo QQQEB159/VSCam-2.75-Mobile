@@ -4,8 +4,10 @@ import haxe.ds.StringMap;
 import sys.io.File;
 
 class LanguageHandler {
+    public static final DEFAULT_LANGUAGE:String = "English";
+    
     private static final translations:StringMap<StringMap<String>> = new StringMap();
-    private static var currentLanguage:String = "English"; //this var is defaulted to english to avoid weird errors
+    private static var currentLanguage:String = DEFAULT_LANGUAGE; //this var is defaulted to english to avoid weird errors
     private static var availableLanguages:Array<String>;
 
     public static function loadTranslations():Void {
@@ -84,7 +86,7 @@ class LanguageHandler {
 		
 		// Ensure English is available as fallback
 		if (availableLanguages.length == 0) {
-			availableLanguages.push("English");
+			availableLanguages.push(DEFAULT_LANGUAGE);
 		}
     }
 

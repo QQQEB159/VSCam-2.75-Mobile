@@ -156,7 +156,7 @@ class Settings {
 
 	public static function validate() {
 		if (!funkin.backend.LanguageHandler.getLanguages().contains(data.language)) {
-			data.language = "English";
+			data.language = funkin.backend.LanguageHandler.DEFAULT_LANGUAGE;
 			Sys.println("Invalid language! Resetting value in settings.");
 		}
 
