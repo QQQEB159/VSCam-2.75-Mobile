@@ -252,15 +252,24 @@ class Paths {
 	public static function readDirectory(path:String):Array<String> {
 		var list:Array<String> = [];
 
-		var directories:Array<String> = ['assets'];
-		for (addon in Addons.list) {
-			if (!addon.disabled)
-				directories.push('addons/${addon.id}');
-		}
+		try {
+			var directories:Array<String> = ['assets'];
+			for (addon in Addons.list) {
+				if (!addon.disabled)
+					directories.push('addons/${addon.id}');
+			}
 
-		for (directory in directories) {
-			if (!FileSystem.exists('$directory/$path')) continue;
-			for (file in FileSystem.readDirectory('$directory/$path')) list.push(file);
+			for (directory in directories) {
+				try {
+					if (!FileSystem.exists('$directory/$path')) continue;
+					for (file in FileSystem.readDirectory('$directory/$path')) list.push(file);
+				} catch (e:haxe.Exception) {
+					Sys.println('Failed to read directory $directory/$path: ${e.message}');
+					// Continue with other directories
+				}
+			}
+		} catch (e:haxe.Exception) {
+			Sys.println('Failed in readDirectory for $path: ${e.message}');
 		}
 
 		return list;

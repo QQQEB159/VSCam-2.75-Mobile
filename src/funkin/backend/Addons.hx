@@ -18,12 +18,28 @@ class Addons {
 
 	public static function load() {
 		#if ADDONS_ALLOWED
-		for (i => id in FileSystem.readDirectory(folder)) {
-			if (!FileSystem.isDirectory('$folder/$id')) continue;
-			var addon:Addon = getFile(id);
-			list.push(addon);
+		try {
+			if (!FileSystem.exists(folder)) {
+				Sys.println('Addons folder does not exist, creating: $folder');
+				FileSystem.createDirectory(folder);
+				return; // No addons to load yet
+			}
+			
+			for (i => id in FileSystem.readDirectory(folder)) {
+				try {
+					if (!FileSystem.isDirectory('$folder/$id')) continue;
+					var addon:Addon = getFile(id);
+					list.push(addon);
 
-			Sys.println('Loaded addon: ${addon.name} ($id)');
+					Sys.println('Loaded addon: ${addon.name} ($id)');
+				} catch (e:haxe.Exception) {
+					Sys.println('Failed to load addon $id: ${e.message}');
+					// Continue loading other addons
+				}
+			}
+		} catch (e:haxe.Exception) {
+			Sys.println('Failed to load addons: ${e.message}');
+			// Don't throw - addons are optional
 		}
 		#end
 
