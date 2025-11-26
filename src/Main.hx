@@ -116,11 +116,13 @@ class Main extends Sprite {
 
 class InitState extends flixel.FlxState {
 	override function create():Void {
-		setDefines();
+		
 		if(!CopyState.checkExistingFiles())
 		flixel.FlxG.switchState(new CopyState());
 		else
 		flixel.FlxG.switchState(new TitleState());
+
+		setDefines();
 	}
 
 	private function setDefines() {
