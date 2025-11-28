@@ -48,10 +48,23 @@ class Meta {
 		#end
 
 		for (i => path in directories) {
-			if (!FileSystem.exists('$path/songs')) continue;
+			try {
+				if (!FileSystem.exists('$path/songs')) {
+					Sys.println('Songs directory not found: $path/songs');
+					continue;
+				}
 
-			for (song in FileSystem.readDirectory('$path/songs')) {
-				_cache.set(song, load(song));
+				for (song in FileSystem.readDirectory('$path/songs')) {
+					try {
+						_cache.set(song, load(song));
+					} catch (e:haxe.Exception) {
+						Sys.println('Failed to cache meta for song ${song}: ${e.message}');
+						// Continue with other songs
+					}
+				}
+			} catch (e:haxe.Exception) {
+				Sys.println('Failed to read directory $path/songs: ${e.message}');
+				// Continue with other directories
 			}
 		}
 	}

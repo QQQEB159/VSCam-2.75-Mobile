@@ -2,10 +2,13 @@ package funkin.backend;
 
 import haxe.ds.StringMap;
 import sys.io.File;
+import sys.FileSystem;
 
 class LanguageHandler {
+    public static final DEFAULT_LANGUAGE:String = "English";
+    
     private static final translations:StringMap<StringMap<String>> = new StringMap();
-    private static var currentLanguage:String = "English"; //this var is defaulted to english to avoid weird errors
+    private static var currentLanguage:String = DEFAULT_LANGUAGE; //this var is defaulted to english to avoid weird errors
     private static var availableLanguages:Array<String>;
 
     public static function loadTranslations():Void {
@@ -23,53 +26,68 @@ class LanguageHandler {
 		#end
 		
 		for(path in translationFiles){
-			final csvData = File.getContent(path);
-			final lines = csvData.split("\n");
-			if (lines.length == 0) continue;
-
-			// Parse the header (languages)
-			final headers = lines[0].split(",");
-			for(lang in headers.slice(1)){
-				if(!availableLanguages.contains(lang)){
-					trace(lang);
-					availableLanguages.push(lang);
+			try {
+				if (!FileSystem.exists(path)) {
+					Sys.println('Translation file not found: ${path}');
+					continue;
 				}
-			}
+				
+				final csvData = File.getContent(path);
+				final lines = csvData.split("\n");
+				if (lines.length == 0) continue;
 
-			for (i in 1...lines.length) {
-				final row = lines[i].split(",");
-				if (row.length < 2) continue;
-
-				final key = row[0];
-				final rowTranslations = new StringMap<String>();
-				for (j in 1...headers.length) {
-					if (j < row.length) {
-						var rowTxt = "";
-						var lastEsc = 0;
-						var escIdx = row[j].indexOf("\\");
-						while (escIdx >= 0 && escIdx < row[j].length - 1) { // ignore the \ if its the last char.
-							rowTxt += row[j].substring(lastEsc, escIdx);
-							rowTxt += switch (row[j].fastCodeAt(escIdx + 1)) {
-								case "n".code: "\n";
-								case "r".code: "\r";
-								case "t".code: "\t";
-								default: row[j].charAt(escIdx + 1); // fuck it just add the char (also allows \', \", \\)
-							}
-
-							lastEsc = escIdx + 2;
-							escIdx = row[j].indexOf("\\", lastEsc);
-						}
-						rowTxt += row[j].substring(lastEsc, row[j].length);
-
-						rowTranslations.set(headers[j], rowTxt);
+				// Parse the header (languages)
+				final headers = lines[0].split(",");
+				for(lang in headers.slice(1)){
+					if(!availableLanguages.contains(lang)){
+						trace(lang);
+						availableLanguages.push(lang);
 					}
 				}
-				if(translations.exists(key)){
-					for(k => v in rowTranslations)
-						translations.get(key).set(k, v);
-				}else
-					translations.set(key, rowTranslations);
+
+				for (i in 1...lines.length) {
+					final row = lines[i].split(",");
+					if (row.length < 2) continue;
+
+					final key = row[0];
+					final rowTranslations = new StringMap<String>();
+					for (j in 1...headers.length) {
+						if (j < row.length) {
+							var rowTxt = "";
+							var lastEsc = 0;
+							var escIdx = row[j].indexOf("\\");
+							while (escIdx >= 0 && escIdx < row[j].length - 1) { // ignore the \ if its the last char.
+								rowTxt += row[j].substring(lastEsc, escIdx);
+								rowTxt += switch (row[j].fastCodeAt(escIdx + 1)) {
+									case "n".code: "\n";
+									case "r".code: "\r";
+									case "t".code: "\t";
+									default: row[j].charAt(escIdx + 1); // fuck it just add the char (also allows \', \", \\)
+								}
+
+								lastEsc = escIdx + 2;
+								escIdx = row[j].indexOf("\\", lastEsc);
+							}
+							rowTxt += row[j].substring(lastEsc, row[j].length);
+
+							rowTranslations.set(headers[j], rowTxt);
+						}
+					}
+					if(translations.exists(key)){
+						for(k => v in rowTranslations)
+							translations.get(key).set(k, v);
+					}else
+						translations.set(key, rowTranslations);
+				}
+			} catch (e:haxe.Exception) {
+				Sys.println('Failed to load translation file ${path}: ${e.message}');
+				// Continue with other files
 			}
+		}
+		
+		// Ensure English is available as fallback
+		if (availableLanguages.length == 0) {
+			availableLanguages.push(DEFAULT_LANGUAGE);
 		}
     }
 
